@@ -92,7 +92,10 @@ def crawl_all():
 
 
 def get_sheet():
-    scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+   scopes = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive",
+]
     creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scopes)
     gc = gspread.authorize(creds)
     sh = gc.open(SPREADSHEET_NAME)
