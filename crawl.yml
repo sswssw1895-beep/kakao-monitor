@@ -1,0 +1,30 @@
+name: kakao-channel-monitor
+
+on:
+  schedule:
+    - cron: "0 0 * * *"   # 매일 09:00 KST (UTC 00:00)
+  workflow_dispatch: {}     # 수동 실행 버튼도 활성화
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 패키지 설치
+        run: |
+          pip install -r requirements.txt
+          playwright install chromium --with-deps
+
+      - name: 서비스 계정 키 파일 생성
+        run: echo '${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}' > service_account.json
+
+      - name: 크롤러 실행
+        run: python crawler.py
+
+      - name: 키 파일 삭제
+        run: rm -f service_account.json
